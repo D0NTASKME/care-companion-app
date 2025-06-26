@@ -1,0 +1,8 @@
+{
+  "name": "Cancer Patient Support System",
+  "description": "A multi-feature system combining a wearable medical device and an intelligent mobile app to guide, support, and connect cancer patients throughout their treatment journey. It includes smart monitoring, AI symptom tracking, a mental health journal, and human connection features.",
+  "requestFramePermissions": [
+    "camera"
+  ],
+  "prompt": ""
+}
