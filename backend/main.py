@@ -45,7 +45,7 @@ async def data_processing_loop():
             "symptom_score": current_state["symptoms"],
             "clinical_biomarker": current_state["clinical_biomarker"]
         }
-        
+        print(f"DEBUG: Broadcasting data packet: {data_packet}")
         # 4. Broadcast the new data packet to all connected dashboard clients
         await manager.broadcast(data_packet)
         
