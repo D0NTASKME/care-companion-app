@@ -1,6 +1,12 @@
 // src/features/journal/ReflectionJournal.tsx
 import React, { useState, useEffect } from 'react';
 
+// --- THE FIX: Define Production-Aware Base URL ---
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+// --- END OF FIX ---
+// --- THE FIX: Use the production-aware API URL ---
+const API_URL = `${API_BASE_URL}/api/journal`;
+// --- END OF FIX ---
 // This is the data structure from OUR backend, which includes more than just feedback
 interface JournalEntry {
   id: number;
@@ -10,8 +16,6 @@ interface JournalEntry {
 }
 
 // The URL for OUR backend endpoint that saves and retrieves entries
-const API_URL = 'http://localhost:8000/api/journal';
-
 export const ReflectionJournal: React.FC = () => {
   // We add state to hold the list of all past entries
   const [entries, setEntries] = useState<JournalEntry[]>([]);

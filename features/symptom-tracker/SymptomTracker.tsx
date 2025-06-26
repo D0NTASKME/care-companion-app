@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { CameraIcon } from '../../constants';
 
+// --- THE FIX: Define Production-Aware Base URL ---
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+// --- END OF FIX ---
+
 // A reusable card component for consistent styling
 const Card: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className }) => (
   <div className={`bg-white shadow-lg rounded-xl p-6 ${className}`}>{children}</div>
@@ -51,10 +55,12 @@ export const SymptomTracker: React.FC = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:8000/api/symptom-analysis', {
+      // --- THE FIX: Use the production-aware API URL ---
+      const response = await fetch(`${API_BASE_URL}/api/symptom-analysis`, {
         method: 'POST',
-        body: formData, // When using FormData, the browser sets the correct 'Content-Type' header automatically
+        body: formData,
       });
+      // --- END OF FIX ---
 
       if (!response.ok) {
         throw new Error(`Server responded with an error: ${response.statusText}`);

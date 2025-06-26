@@ -1,5 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 
+// --- THE FIX: Define Production-Aware Base URLs ---
+// For standard HTTP requests (fetch)
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+// For WebSocket connections
+const WS_BASE_URL = import.meta.env.VITE_WS_BASE_URL || 'ws://localhost:8000';
+// --- END OF FIX ---
+
 // This is the new, rich data packet from our "Real Data" backend
 interface ProgressData {
   progress_score: number;
@@ -64,7 +71,11 @@ export const SmartMonitoringDashboard: React.FC = () => {
 
   // This effect manages the WebSocket connection to receive live data from the backend
   useEffect(() => {
-    webSocket.current = new WebSocket('ws://localhost:8000/api/ws/health-data');
+    // --- THE FIX: Use the production-aware WebSocket URL ---
+    const socketUrl = `${WS_BASE_URL}/api/ws/health-data`;
+    console.log("Connecting WebSocket to:", socketUrl); // Helpful for debugging
+    webSocket.current = new WebSocket(socketUrl);
+    // --- END OF FIX ---
     webSocket.current.onmessage = (event) => {
       try {
         const data: ProgressData = JSON.parse(event.data);
@@ -79,23 +90,27 @@ export const SmartMonitoringDashboard: React.FC = () => {
     // This simulates a stressful event detected by the wearable (e.g., poor sleep -> low HRV)
     const data = { hrv: 25 }; 
     alert("Simulating stressful wearable data (low HRV). The Progress Score will decrease.");
-    await fetch('http://localhost:8000/api/health-connect-data', {
+    // --- THE FIX: Use the production-aware API URL ---
+    await fetch(`${API_BASE_URL}/api/health-connect-data`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     }).catch(err => alert(`Failed to send data: ${err}`));
+    // --- END OF FIX ---
   };
   
   const simulateClinicalData = async () => {
     const level = parseFloat(prompt("Enter new Clinical Biomarker level (e.g., 8.5 is high, 2.0 is good):", "8.5") || "8.5");
     if (isNaN(level)) return;
     alert(`Sending new lab result. A higher biomarker level will decrease the Progress Score.`);
-    await fetch('http://localhost:8000/api/clinical-data', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ biomarker_level: level }),
+    // --- THE FIX: Use the production-aware API URL ---
+    await fetch(`${API_BASE_URL}/api/clinical-data`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ biomarker_level: level }),
     }).catch(err => alert(`Failed to send data: ${err}`));
-  };
+  // --- END OF FIX ---
+    };
 
   return (
     <div className="space-y-6">
